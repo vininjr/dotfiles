@@ -1,0 +1,5 @@
+xterm*background:   black
+xterm*foreground:   white
+xterm*selectToClipboard: true
+xterm*font: terminus-12
+
