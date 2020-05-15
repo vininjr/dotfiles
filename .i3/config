@@ -188,6 +188,8 @@ bindsym $mod+b exec google-chrome-stable &
 
 #pcmanfm binding
 bindsym $mod+Shift+d exec pcmanfm &
+#pcmanfm binding
+#bindsym $mod+Shift+d exec bash -c 'GTK2_RC_FILES=/home/marcus/.themes/Arc-Dark/gtk-2.0/gtkrc pcmanfm'
 
 # Pulse Audio controls
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%; exec pactl set-sink-mute @DEFAULT_SINK@ 0 && notify-send --expire-time=3000 --icon=gtk-info Volume "Volume is $(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }')"
