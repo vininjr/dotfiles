@@ -92,6 +92,12 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
+# alias directory
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -116,47 +122,35 @@ if ! shopt -oq posix; then
   fi
 fi
 
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# Export the Android SDK path 
-export ANDROID_HOME=$HOME/Android/Sdk
-export PATH=$PATH:$ANDROID_HOME/tools/bin
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-
-export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
-export PATH=$JAVA_HOME/bin:$PATH
-
 prompt_git() {
-	local s='';
-	local branchName='';
-	git rev-parse --is-inside-work-tree &>/dev/null || return;
-	branchName="$(git symbolic-ref --quiet --short HEAD 2> /dev/null || \
-		git describe --all --exact-match HEAD 2> /dev/null || \
-		git rev-parse --short HEAD 2> /dev/null || \
-		echo '(unknown)')";
-	repoUrl="$(git config --get remote.origin.url)";
-	if grep -q 'chromium/src.git' <<< "${repoUrl}"; then
-		s+='*';
-	else
-		if ! $(git diff --quiet --ignore-submodules --cached); then
-			s+='+';
-		fi;
-		if ! $(git diff-files --quiet --ignore-submodules --); then
-			s+='!';
-		fi;
-		if [ -n "$(git ls-files --others --exclude-standard)" ]; then
-			s+='?';
-		fi;
-		if $(git rev-parse --verify refs/stash &>/dev/null); then
-			s+='$';
-		fi;
-	fi;
+    local s='';
+    local branchName='';
+    git rev-parse --is-inside-work-tree &>/dev/null || return;
+    branchName="$(git symbolic-ref --quiet --short HEAD 2> /dev/null || \
+        git describe --all --exact-match HEAD 2> /dev/null || \
+        git rev-parse --short HEAD 2> /dev/null || \
+        echo '(unknown)')";
+    repoUrl="$(git config --get remote.origin.url)";
+    if grep -q 'chromium/src.git' <<< "${repoUrl}"; then
+        s+='*';
+    else
+        if ! $(git diff --quiet --ignore-submodules --cached); then
+            s+='+';
+        fi;
+        if ! $(git diff-files --quiet --ignore-submodules --); then
+            s+='!';
+        fi;
+        if [ -n "$(git ls-files --others --exclude-standard)" ]; then
+            s+='?';
+        fi;
+        if $(git rev-parse --verify refs/stash &>/dev/null); then
+            s+='$';
+        fi;
+    fi;
 
-	[ -n "${s}" ] && s=" [${s}]";
+    [ -n "${s}" ] && s=" [${s}]";
 
-	echo -e "${1}${branchName}${2}${s}";
+    echo -e "${1}${branchName}${2}${s}";
 }
 
 bold='';
@@ -186,3 +180,29 @@ export PS1;
 
 PS2="\[${yellow}\]→ \[${reset}\]";
 export PS2;
+
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+CHROME_BIN=/usr/bin/chromium-browser
+CHROME_PATH=/usr/bin/chromium-browser
+CHROMIUM_PATH=/usr/bin/chromium-browser
+PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+alias cpprun='compile_and_run.sh'
+alias vim='NVIM_TUI_ENABLE_TRUE_COLOR=1 nvim'
+
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export ANDROID_HOME=~/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:~/android-studio/bin
+
+PUPPETEER_EXECUTABLE_PATH="/usr/bin/google-chrome"
+PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+

@@ -180,6 +180,8 @@ bar {
  			 }
 }
 
+# for ubuntu 20 use in notify-send tag '-h string:x-canonical-private-synchronous:anything'
+#
 bindsym $mod+Tab exec --no-startup-id exec rofi -show window -font "Terminus 10" -lines 6 -i -separator-style solid -opacity "90"
 bindsym Print exec --no-startup-id scrot "$HOME/Imagens/Screenshot %Y-%m-%d %H-%M-%S %z.png" && notify-send --expire-time=3000 --icon=gtk-info Screen "Print Screen"
 
