@@ -12,8 +12,7 @@ font pango:monospace 12
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec terminology
-bindsym $mod+shift+Return exec lxterminal
+bindsym $mod+Return exec lxterminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -33,7 +32,8 @@ for_window [window_type="dialog"] floating enable
 for_window [window_type="menu"] floating enable
 for_window [class="^.*"] border pixel 0
 for_window [title="LXTerminal"] floating enable, move position center, border none, resize set 620 480
-for_window [title="Terminology"] floating enable, move position center, border normal, resize set 620 480
+for_window [title="geany_run*"] floating enable, move position center, border none, resize set 620 480
+for_window [title="bash"] floating enable, move position left, border none, resize set 620 480
 for_window [class="^Steam$" title="Steam - News"] kill
 for_window [class="^Steam$" title="Steam"] floating enable
 for_window [title="Git Gui"] floating enable, move position center, border none, resize set 620 480
@@ -97,12 +97,12 @@ set $urgent-bg-color        #E53935
 set $text-color             #f3f4f5
 set $inactive-text-color    #676E7D
 
-# window colors
-#                       border              background          text                    indicator
-client.focused          $bg-color           $bg-color           $text-color             #4c7899
-client.unfocused        $inactive-bg-color  $inactive-bg-color  $inactive-text-color    #333333
-client.focused_inactive $inactive-bg-color  $inactive-bg-color  $inactive-text-color    #333333
-client.urgent           $urgent-bg-color    $urgent-bg-color    $text-color             #2f343a
+# class                 border  bground text    indicator child_border
+client.focused          #6272A4 #6272A4 #F8F8F2 #6272A4   #6272A4
+client.focused_inactive #44475A #44475A #F8F8F2 #44475A   #44475A
+client.unfocused        #282A36 #282A36 #BFBFBF #282A36   #282A36
+client.urgent           #44475A #FF5555 #F8F8F2 #FF5555   #FF5555
+client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
 
 # switch to workspace
 bindsym $mod+1 workspace 1
@@ -164,24 +164,24 @@ bindsym $mod+r mode "resize"
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-		font pango:DejaVu Sans Mono, FontAwesome 9
-        status_command exec /usr/share/doc/i3status/contrib/mem-usage.sh
-		position top
-  		separator_symbol ""
-		colors {
-	        separator #666666
-	        background #222222
-	        statusline #dddddd
-	        focused_workspace #0088CC #0088CC #ffffff
-	        active_workspace #333333 #333333 #ffffff
-	        inactive_workspace #333333 #333333 #888888
-	        urgent_workspace #2f343a #900000 #ffffff
-	        binding_mode #b71c1c #b71c1c #00000000
- 			 }
+                font pango:DejaVu Sans Mono, FontAwesome 9
+        status_command exec /opt/mem-usage.sh
+                position top
+                separator_symbol ""
+                colors {
+    background #282A36
+    statusline #F8F8F2
+    separator  #44475A
+
+    focused_workspace  #44475A #44475A #F8F8F2
+    active_workspace   #282A36 #44475A #F8F8F2
+    inactive_workspace #282A36 #282A36 #BFBFBF
+    urgent_workspace   #FF5555 #FF5555 #F8F8F2
+    binding_mode       #FF5555 #FF5555 #F8F8F2
+
+                         }
 }
 
-# for ubuntu 20 use in notify-send tag '-h string:x-canonical-private-synchronous:anything'
-#
 bindsym $mod+Tab exec --no-startup-id exec rofi -show window -font "Terminus 10" -lines 6 -i -separator-style solid -opacity "90"
 bindsym Print exec --no-startup-id scrot "$HOME/Imagens/Screenshot %Y-%m-%d %H-%M-%S %z.png" && notify-send --expire-time=3000 --icon=gtk-info Screen "Print Screen"
 
@@ -194,23 +194,31 @@ bindsym $mod+Shift+d exec pcmanfm &
 #bindsym $mod+Shift+d exec bash -c 'GTK2_RC_FILES=/home/marcus/.themes/Arc-Dark/gtk-2.0/gtkrc pcmanfm'
 
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%; exec pactl set-sink-mute @DEFAULT_SINK@ 0 && notify-send --expire-time=3000 --icon=gtk-info Volume "Volume is $(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }')"
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%; exec pactl set-sink-mute @DEFAULT_SINK@ 0 && notify-send --expire-time=3000 --icon=gtk-info Volume "Volume is $(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }')"
-bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle && notify-send --expire-time=3000 --icon=gtk-info Volume "Volume is muted: $(pacmd list-sinks|grep -A 15 '* index'|awk '/muted:/{ print $2 }')"
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%; exec pactl set-sink-mute @DEFAULT_SINK@ 0 && notify-send -h string:x-canonical-private-synchronous:anything --expire-time=3000 --icon=gtk-info Volume "Volume is $(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }')"
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%; exec pactl set-sink-mute @DEFAULT_SINK@ 0 && notify-send -h string:x-canonical-private-synchronous:anything --expire-time=3000 --icon=gtk-info Volume "Volume is $(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }')"
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle && notify-send -h string:x-canonical-private-synchronous:anything --expire-time=2000 --icon=gtk-info Volume "Volume is muted: $(pacmd list-sinks|grep -A 15 '* index'|awk '/muted:/{ print $2 }')"
 
 # Screen brightness controls
-bindsym XF86MonBrightnessUp   exec --no-startup-id echo $(brightness-nvidia -inc) && notify-send --expire-time=3000 --icon=gtk-info Backlight "Brightness is $(brightness-nvidia -get)"
-bindsym XF86MonBrightnessDown exec --no-startup-id echo $(brightness-nvidia -dec) && notify-send --expire-time=3000 --icon=gtk-info Backlight "Brightness is $(brightness-nvidia -get)"
+bindsym XF86MonBrightnessUp   exec --no-startup-id echo $(brightness-nvidia -inc) && notify-send -h string:x-canonical-private-synchronous:anything --expire-time=2000 --icon=gtk-info Backlight "Brightness is $(brightness-nvidia -get)"
+bindsym XF86MonBrightnessDown exec --no-startup-id echo $(brightness-nvidia -dec) && notify-send -h string:x-canonical-private-synchronous:anything --expire-time=2000 --icon=gtk-info Backlight "Brightness is $(brightness-nvidia -get)"
 
 # Set wallpaper
-exec_always --no-startup-id feh --bg-center /home/marcus/Imagens/wallpapper.jpg
+exec_always --no-startup-id feh --randomize --bg-center $HOME/Imagens/Wallpappers/*
+bindsym $mod+Shift+p exec feh --randomize --bg-center $HOME/Imagens/Wallpappers/*
 
 set $mode_system System (e) logout, (r) reboot, (Shift+s) shutdown
 mode "$mode_system" {
-    bindsym e exec --no-startup-id i3exit logout, mode "default"
-    bindsym r exec --no-startup-id i3exit reboot, mode "default"
-    bindsym Shift+s exec --no-startup-id i3exit shutdown, mode "default"
+    bindsym e exec --no-startup-id i3-msg exit, mode "default"
+    bindsym r exec --no-startup-id systemctl reboot, mode "default"
+    bindsym Shift+s exec --no-startup-id systemctl poweroff, mode "default"
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
 bindsym $mod+Pause mode "$mode_system"
+
+# Options
+popup_during_fullscreen leave_fullscreen
+popup_during_fullscreen leave_fullscreen
+workspace_auto_back_and_forth no
+
+focus_follows_mouse no
