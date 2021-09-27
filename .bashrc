@@ -92,12 +92,6 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-# alias directory
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -181,28 +175,58 @@ export PS1;
 PS2="\[${yellow}\]→ \[${reset}\]";
 export PS2;
 
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias ls='ls --group-directories-first --color=auto -CF'
+
+# alias directory
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+
+alias mvns='mvn spring-boot:run'
+alias mvnb='mvn clean package'
+
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+alias vim='NVIM_TUI_ENABLE_TRUE_COLOR=1 nvim'
+
 CHROME_BIN=/usr/bin/chromium-browser
 CHROME_PATH=/usr/bin/chromium-browser
 CHROMIUM_PATH=/usr/bin/chromium-browser
-PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
-
-alias cpprun='compile_and_run.sh'
-alias vim='NVIM_TUI_ENABLE_TRUE_COLOR=1 nvim'
-
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-export ANDROID_HOME=~/Android/Sdk
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/tools
-export PATH=$PATH:$ANDROID_HOME/tools/bin
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-export PATH=$PATH:~/android-studio/bin
-
 PUPPETEER_EXECUTABLE_PATH="/usr/bin/google-chrome"
 PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
+export ANDROID_HOME=~/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export PATH=$PATH:$JAVA_HOME/bin
+
+ex ()
+{
+    if [ -f $1 ] ; then
+        case $1 in
+            *.tar.bz2)   tar xjf $1   ;;
+            *.tar.gz)    tar xzf $1   ;;
+            *.bz2)       bunzip2 $1   ;;
+            *.rar)       unrar x $1     ;;
+            *.gz)        gunzip $1    ;;
+            *.tar)       tar xf $1    ;;
+            *.tbz2)      tar xjf $1   ;;
+            *.tgz)       tar xzf $1   ;;
+            *.zip)       unzip $1     ;;
+            *.Z)         uncompress $1;;
+            *.7z)        7z x $1      ;;
+            *)           echo "'$1' cannot be extracted via ex()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
